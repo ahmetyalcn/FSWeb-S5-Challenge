@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const Card = (makale) => {
   // GÖREV 5
   // ---------------------
@@ -17,8 +19,53 @@ const Card = (makale) => {
   //   </div>
   // </div>
   //
-}
+  const card = document.createElement("div");
+  card.classList.add("card");
 
+  const headline = document.createElement("div");
+  headline.classList.add("headline");
+  headline.textContent = makale.anabaslik;
+
+  const author = document.createElement("div");
+  author.classList.add("author");
+
+  const imgContainer = document.createElement("div");
+  imgContainer.classList.add("img-container");
+
+  const image = document.createElement("img")
+  image.setAttribute("src", makale.yazarFoto)
+
+  const yazar = document.createElement("span");
+  yazar.textContent = makale.yazarAdi + " tarafından"
+
+  card.addEventListener("click", (e) => {
+    console.log(headline.textContent);
+  })
+
+  card.append(headline, author)
+  author.append(imgContainer, yazar)
+  imgContainer.append(image)
+
+  return card;
+}
+export const filtrele = (category) => {
+  if (category == "all") {
+    cardEkleyici(".cards-container")
+  } else {
+    const veriler = axios.get("http://localhost:5001/api/makaleler");
+    veriler.then(veri => {
+
+      let gelenVeri = veri.data.makaleler[category];
+      document.querySelector(".cards-container").textContent = "";
+      for (let key of gelenVeri) {
+        document.querySelector(".cards-container").append(Card(key))
+      }
+
+
+    })
+  }
+
+}
 const cardEkleyici = (secici) => {
   // GÖREV 6
   // ---------------------
@@ -28,6 +75,20 @@ const cardEkleyici = (secici) => {
   // Card bileşenini kullanarak yanıttaki her makale nesnesinden bir kart oluşturun.
   // Her cardı, fonksiyona iletilen seçiciyle eşleşen DOM'daki öğeye ekleyin.
   //
+  const veriler = axios.get("http://localhost:5001/api/makaleler");
+  veriler.then(veri => {
+
+    let gelenVeri = veri.data.makaleler;
+    for (let konu in gelenVeri) {
+      for (let key of gelenVeri[konu]) {
+        key.kategori = konu
+        document.querySelector(secici).append(Card(key))
+      }
+    }
+
+  })
+
+
 }
 
 export { Card, cardEkleyici }
