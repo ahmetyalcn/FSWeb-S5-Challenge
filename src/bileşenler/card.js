@@ -60,8 +60,6 @@ export const filtrele = (category) => {
       for (let key of gelenVeri) {
         document.querySelector(".cards-container").append(Card(key))
       }
-
-
     })
   }
 
